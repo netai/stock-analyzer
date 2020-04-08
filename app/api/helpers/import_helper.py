@@ -44,6 +44,7 @@ def save_stock_report_from_nse(csv_data, stock_id):
                         avg_price=row[9].strip(),
                         traded_qty=row[10].strip(),
                         delivery_qty=row[13].strip(),
+                        series=row[1].strip(),
                         exchange_name='NSE',
                         stock_id=stock_id
                     )

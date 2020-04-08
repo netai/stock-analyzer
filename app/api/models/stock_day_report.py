@@ -14,6 +14,7 @@ class StockDayReport(db.Model):
     avg_price = db.Column(db.Float, nullable=True)
     traded_qty = db.Column(db.Integer, nullable=True)
     delivery_qty = db.Column(db.Integer, nullable=True)
+    series = db.Column(db.String(3), nullable=True)
     exchange_name = db.Column(db.String(4), nullable=False)
     stock_id = db.Column(db.Integer, db.ForeignKey('stock.id'))
 
