@@ -3,7 +3,7 @@ from ..models.stock import Stock
 from ..models.stock_day_report import StockDayReport
 from .. import db
 
-def save_stk_NSE(csv_data):
+def save_stk_nse(csv_data):
     """Save NSE listed stocks CSV to Database"""
     try:
         next(csv_data)
@@ -25,7 +25,7 @@ def save_stk_NSE(csv_data):
         print(e)
         return False
 
-def save_stk_rpt_NSE(csv_data, stock_id):
+def save_stk_rpt_nse(csv_data, stock_id):
     """Save NSE history stock report CSV to Database"""
     try:
         next(csv_data)
@@ -57,7 +57,7 @@ def save_stk_rpt_NSE(csv_data, stock_id):
         print(e)
         return False
 
-def save_dly_stk_rpt_NSE(csv_data):
+def save_dly_stk_rpt_nse(csv_data):
     """Save NSE daily stock report CSV to Database"""
     try:
         next(csv_data)

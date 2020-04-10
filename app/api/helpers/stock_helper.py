@@ -1,4 +1,5 @@
 from datetime import datetime
+from sqlalchemy import func
 from ..models.stock import Stock
 from ..models.stock_day_report import StockDayReport
 from ..models.user import User
@@ -41,31 +42,32 @@ def get_all_stock():
     return Stock.query.all()
 
 def get_a_stock(symbol):
-    stock = Stock.query.filter_by(symbol=symbol).first()
-    last_day_report = StockDayReport.query.filter_by(stock_id=stock.id).filter_by(exchange_name='NSE').order_by(StockDayReport.date.desc()).first()
+    stock_detail = db.session.query(Stock,StockDayReport,func.avg(StockDayReport.traded_qty).label('traded_qty_avg'),func.avg(StockDayReport.delivery_qty).label('delivery_qty_avg')).join(StockDayReport, Stock.id==StockDayReport.stock_id)\
+        .filter(Stock.symbol==symbol).filter(StockDayReport.exchange_name=='NSE').order_by(StockDayReport.date.desc()).first()
+    print(str(stock_detail))
     return_data = {
-        'id': stock.id,
-        'symbol': stock.symbol,
-        'company_name': stock.company_name,
-        'series': stock.series,
-        'listing_date': str(stock.listing_date),
-        'isin_number': stock.isin_number,
-        'face_value': stock.face_value,
-        'company_detail': stock.company_detail,
-        'comapany_website': stock.company_website,
+        'id': stock_detail.Stock.id,
+        'symbol': stock_detail.Stock.symbol,
+        'company_name': stock_detail.Stock.company_name,
+        'series': stock_detail.Stock.series,
+        'listing_date': str(stock_detail.Stock.listing_date),
+        'isin_number': stock_detail.Stock.isin_number,
+        'face_value': stock_detail.Stock.face_value,
+        'company_detail': stock_detail.Stock.company_detail,
+        'comapany_website': stock_detail.Stock.company_website,
         'trade_detail': {
             'nse': {
-                'date': str(last_day_report.date),
-                'open_price': last_day_report.open_price,
-                'high_price': last_day_report.high_price,
-                'low_price': last_day_report.low_price,
-                'last_price': last_day_report.last_price,
-                'close_price': last_day_report.close_price,
-                'avg_price': last_day_report.avg_price,
-                'traded_qty': last_day_report.traded_qty,
-                'dlvry_qty': last_day_report.delivery_qty,
-                'dlvry_per': '',
-                'avg_dlvry_per': '',
+                'date': str(stock_detail.StockDayReport.date),
+                'open_price': stock_detail.StockDayReport.open_price,
+                'high_price': stock_detail.StockDayReport.high_price,
+                'low_price': stock_detail.StockDayReport.low_price,
+                'last_price': stock_detail.StockDayReport.last_price,
+                'close_price': stock_detail.StockDayReport.close_price,
+                'avg_price': stock_detail.StockDayReport.avg_price,
+                'traded_qty': stock_detail.StockDayReport.traded_qty,
+                'dlvry_qty': stock_detail.StockDayReport.delivery_qty,
+                'dlvry_per': round((stock_detail.StockDayReport.delivery_qty/stock_detail.StockDayReport.traded_qty)*100, 2),
+                'avg_dlvry_per': round((stock_detail.delivery_qty_avg/stock_detail.traded_qty_avg)*100, 2),
             }
         }
     }
