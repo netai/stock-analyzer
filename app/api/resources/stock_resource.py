@@ -22,3 +22,16 @@ class StockList(Resource):
         """add a new stock"""
         stock_request = StockDto.parser.parse_args()
         return save_new_stock(data=stock_request)
+
+class Stock(Resource):
+    @token_required
+    def get(self, symbol):
+        """get a stock given its identifier"""
+        stock_detail = get_a_stock(symbol)
+        response_object = {
+            'status': 'success',
+            'data': {
+                'stock': stock_detail
+            }
+        }
+        return response_object, 200

@@ -3,8 +3,8 @@ from flask import Blueprint
 
 from .api.resources.user_resource import UserList, User
 from .api.resources.auth_resource import UserLogin, Logout
-from .api.resources.import_resource import ImportStock, ImportHistoryStockReport
-from .api.resources.stock_resource import StockList
+from .api.resources.import_resource import ImportStock, ImportHistoryStockReport, ImportDailyStockReport
+from .api.resources.stock_resource import StockList, Stock
 
 blueprint = Blueprint('api', __name__)
 
@@ -18,7 +18,10 @@ api.add_resource(Logout, '/logout')
 
 """Stock related route"""
 api.add_resource(StockList, '/stock')
+api.add_resource(Stock, '/stock/<symbol>')
+
 
 """Data import related route"""
 api.add_resource(ImportStock, '/import/stock')
 api.add_resource(ImportHistoryStockReport, '/import/history/day')
+api.add_resource(ImportDailyStockReport, '/import/report/day')
