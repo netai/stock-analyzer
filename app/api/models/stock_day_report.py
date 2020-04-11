@@ -1,4 +1,4 @@
-from .. import db
+from app import db
 
 class StockDayReport(db.Model):
     """Stock Report model for storing stock report retated details"""
@@ -9,7 +9,7 @@ class StockDayReport(db.Model):
     open_price = db.Column(db.Float, nullable=False)
     high_price = db.Column(db.Float, nullable=False)
     low_price = db.Column(db.Float, nullable=False)
-    last_price = db.Column(db.Float, nullable=False)
+    last_price = db.Column(db.Float, nullable=True)
     close_price = db.Column(db.Float, nullable=False)
     avg_price = db.Column(db.Float, nullable=True)
     traded_qty = db.Column(db.Integer, nullable=True)

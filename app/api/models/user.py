@@ -1,7 +1,7 @@
-from .. import db, bcrypt
 import datetime
 import jwt
-from ..config import key
+from app import db, bcrypt
+from app.config import key
 
 class User(db.Model):
     """ User Model for storing user related details """

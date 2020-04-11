@@ -28,10 +28,36 @@ class Stock(Resource):
     def get(self, symbol):
         """get a stock given its identifier"""
         stock_detail = get_a_stock(symbol)
+        print(stock_detail)
+        stock_detail_json = {
+            'id': stock_detail.Stock.id,
+            'symbol': stock_detail.Stock.symbol,
+            'company_name': stock_detail.Stock.company_name,
+            'series': stock_detail.Stock.series,
+            'listing_date': str(stock_detail.Stock.listing_date),
+            'isin_number': stock_detail.Stock.isin_number,
+            'face_value': stock_detail.Stock.face_value,
+            'company_detail': stock_detail.Stock.company_detail,
+            'comapany_website': stock_detail.Stock.company_website,
+            'trade_detail': {
+                'nse': {
+                    'date': str(stock_detail.StockDayReport.date),
+                    'open_price': stock_detail.StockDayReport.open_price,
+                    'high_price': stock_detail.StockDayReport.high_price,
+                    'low_price': stock_detail.StockDayReport.low_price,
+                    'last_price': stock_detail.StockDayReport.last_price,
+                    'close_price': stock_detail.StockDayReport.close_price,
+                    'avg_price': stock_detail.StockDayReport.avg_price,
+                    'traded_qty': stock_detail.StockDayReport.traded_qty,
+                    'dlvry_qty': stock_detail.StockDayReport.delivery_qty,
+                    'dlvry_per': round((stock_detail.StockDayReport.delivery_qty/stock_detail.StockDayReport.traded_qty)*100, 2),
+                }
+            }
+        }
         response_object = {
             'status': 'success',
             'data': {
-                'stock': stock_detail
+                'stock': stock_detail_json
             }
         }
         return response_object, 200

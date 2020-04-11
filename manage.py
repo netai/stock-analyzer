@@ -2,8 +2,8 @@ import os
 import unittest
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
-from app import blueprint
-from app.api import create_app, db
+from app import create_app, db
+from app.api import blueprint
 
 app = create_app(os.getenv('STOCK_PROJ_ENV') or 'dev')
 app.register_blueprint(blueprint)

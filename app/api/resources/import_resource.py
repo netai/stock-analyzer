@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from ..util.decorator import admin_token_required
 from ..helpers.import_helper import save_stk_nse, save_stk_rpt_nse, save_dly_stk_rpt_nse
 from ..helpers.stock_helper import get_all_stock
-from ..constants import ExternalCSV
+from app.constants import ExternalCSV
 
 class ImportStock(Resource):
     @admin_token_required
@@ -46,13 +46,13 @@ class ImportHistoryStockReport(Resource):
             'Sec-Fetch-Site': 'same-origin',
             'X-Requested-With': 'XMLHttpRequest',
             'Host': 'www1.nseindia.com',
-            'Cookie': 'sym1=TCS; sym2=WIPRO; _ga=GA1.2.270553252.1586297590; sym3=WSTCSTPAPR; pointer=3; NSE-TEST-1=1927290890.20480.0000; _gid=GA1.2.1756842089.1586456257; ak_bmsc=A139AF98E935116268EECBB7EB4964DF17CB3F0E95500000AA7B8F5E8465F26D~plmvICUQPUrdgrGHCpkDp4GxHFnJClHmLVA+KeTVdBEaW8eSDZYDf8sDdinTfezHBXJ9K6KT/Gzqq+HE4t6V/WLOpWe7FIcROspez0JVc8HhHuMpbZ1Ug80I1DDCnkF9rG0KuES3uDH+MHtENPZnJsNny3kJRUxVYpQsLj/WAhHbbs9KUvNbMZUs8fNvZ5IGPq3TKiCzruyFk64lkhz8J+O6oJvB5BqMJDmkMq88ahJ+4=; bm_mi=CB1EB2DC0E366F7FFC8A9A8BAAA42DCB~oFa+hnNsrUOZZcivDwg/zmLSC3IqU4FLU/vsdqVmYix0knAF45VZNpw8BKOdIgRjfxEzLvN6aOcPgqi3PAoF4BFyTtgHCvaomog2vlsediI2hGnFtQz+zv/tC9SccQgabQq82+j594t01elud1Bnwne8XydTlhJTxy9uF2fq57+mioHJrVm4IMb2uKRF8pGDansKnyVxFTB1e0fY4o4sGYGspXVhR6B4PHVKhzTOiJUedJ3S06YLhShEyb3LUYiwT7nXSZL6PPKVQ862M1hmW17k2lPJU7KXpuo8/1fLPgk=; RT="z=1&dm=nseindia.com&si=ce6a7f89-dc0d-4870-a97e-07dbe084f7ff&ss=k8t1zkdb&sl=1&tt=7v&bcn=%2F%2F684fc53b.akstat.io%2F&ld=5s4u6"; JSESSIONID=47896D0BBDBE722051458673276E4233.tomcat2; bm_sv=A4586E30B481ADB6D78D1D40CA94F0CC~LcTrwXihd7jPfcKmZhnbgfjbfHoS+uZAdquzEbEmjZ1oxV9Qi1L30wxLIq4LjKFRL5ufDzGDO9+GwJHaMHhgp5/KUZBnUweI3lhKOa/GusXkrhN4qbucvKaqpQF3nD5B9LOYoCxVxJbisW3Z0xNcoJfIXqWD8fspFAa1fylnBsw=',
+            'Cookie': 'sym1=TCS; sym2=WIPRO; _ga=GA1.2.270553252.1586297590; sym3=WSTCSTPAPR; pointer=3; NSE-TEST-1=1910513674.20480.0000; JSESSIONID=32B5753785DD9D53657AAA8963C0A520.jvm1; bm_mi=CDAB10079ED92C19E38216AC6A9E7196~KhR3Kh7Cjdq1AG1kpvs03fl7UD2G81qHGyfhDRPYpW4qzLcNhD6gFcxwxUtfWpzZOt5Hq9SVnNDB5WNXcoZVApyaoy9ii5Mf64BM7cV4ZoqEPpnr28zkGiJh1sMK02En/Cc2BgKVz81w5LxvxVIxESMdxYPFWJ2o2yWokjA+LT1+zvLcdf7r6Xi4AfhWo06j28z0M+5HNgvY7mcd7MmJ6TjoUQOySrcq+l4EChZ5RWIi8XZhf2ysNLHw4ambjiM99N/yk/FsEk2MsQ4+xP7VmSLSSwIsNiNzFsW9g+S4ToL46DUjBh8SjQelLQPgpVb5+hWRcw1oB/f0h3DQU+AdVsdPNaRC5x2qJROG8ySeBAA=; ak_bmsc=3624F46499D11F36FBAC5CFDBF8331A650434A65F1010000BCE7915EB4829E78~plp2Wkyfr6HMqmNwKUMCNvlOnbw/L9L69FU0xi2HpK8w5cKEjdv8f2ywYYIbLKcyZMIowcb3QvwtXj6C2WudxyiHiN11c+r75snnRTF6c28fcPfHaiAuAAF/0ShiTvsAxIiZEyfjaLWAao6QolRPoQalBt+/xATiE0Q6Dl+5yXvsWW0NbiyWoZ8lW88eZ/wrm37k/duf1d2i/va2+hgiutsYZn4U8BhWqQ5jI7rpZXAQxoiRzv+6Sgu/PAILmotRJh; RT="z=1&dm=nseindia.com&si=ce6a7f89-dc0d-4870-a97e-07dbe084f7ff&ss=k8vnuvtf&sl=0&tt=0&bcn=%2F%2F684fc53f.akstat.io%2F"; bm_sv=2422D560D37AB411EA5448658F86C589~oM5yD+DWZiac7gAFtg9xSF7avSFRy/k+rlNbwuAjjLKXA1ZsnBEvuVjBPQtVIAnGeusdj4njm2ksDnD049H31RxaAY7HehuFpb8yMfMuMBMBHIb7OX8dIqwqpV9xJGDycAbFeMzflsy0c2wY+iGTdetQT6H8KB827VDLU5wJdIo=',
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36'
         }
         status = False
         stock_list = get_all_stock()
         for stock in stock_list:
-            if stock.id < 0:
+            if stock.id < 329:
                 print(stock.symbol+" ====> Completed")
                 continue
             print(stock.symbol+' ====> '+str(stock.id))

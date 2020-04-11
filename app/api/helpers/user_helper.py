@@ -1,6 +1,6 @@
 import uuid
 import datetime
-from .. import db
+from app import db
 from ..models.user import User
 
 def save_new_user(data):

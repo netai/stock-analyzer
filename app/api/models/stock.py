@@ -1,4 +1,4 @@
-from .. import db
+from app import db
 
 class Stock(db.Model):
     """Stock model for storing stock retated details"""
