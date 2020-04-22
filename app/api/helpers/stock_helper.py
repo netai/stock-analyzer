@@ -2,7 +2,7 @@ from datetime import datetime
 from sqlalchemy import func
 from app import db
 from ..models.stock import Stock
-from ..models.stock_day_report import StockDayReport
+from ..models.stock_report import StockReport
 from ..models.user import User
 
 def save_new_stock(data):
@@ -16,7 +16,8 @@ def save_new_stock(data):
                 listing_date=datetime.strptime(data['listing_date'], "%d-%b-%Y"),
                 isin_number=data['isin_number'],
                 face_value=data['face_value'],
-                company_detail=data['company_detail']
+                company_detail=data['company_detail'],
+                exchange_name='NSE'
             )
             save_changes(new_stock)
             response_object = {
@@ -42,13 +43,13 @@ def get_all_stock():
     return Stock.query.all()
 
 def get_a_stock(symbol):
-    stock_detail = db.session.query(Stock,StockDayReport).join(StockDayReport, Stock.id==StockDayReport.stock_id)\
-        .filter(Stock.symbol==symbol).filter(StockDayReport.series==Stock.series).filter(StockDayReport.exchange_name=='NSE').order_by(StockDayReport.date.desc()).first()
+    stock_detail = db.session.query(Stock,StockReport).join(StockReport, Stock.id==StockReport.stock_id)\
+        .filter(Stock.symbol==symbol).filter(StockReport.series==Stock.series).filter(StockReport.exchange_name=='NSE').order_by(StockReport.date.desc()).first()
     return stock_detail
 
 def get_stock_data_limit(symbol, limit=1):
-    stock_data = db.session.query(Stock,StockDayReport).join(StockDayReport, Stock.id==StockDayReport.stock_id)\
-        .filter(Stock.symbol==symbol).filter(StockDayReport.series==Stock.series).filter(StockDayReport.exchange_name=='NSE').order_by(StockDayReport.date.desc()).limit(limit)
+    stock_data = db.session.query(Stock,StockReport).join(StockReport, Stock.id==StockReport.stock_id)\
+        .filter(Stock.symbol==symbol).filter(StockReport.series==Stock.series).filter(StockReport.exchange_name=='NSE').order_by(StockReport.date.desc()).limit(limit)
     return stock_data
 
 def save_changes(data):

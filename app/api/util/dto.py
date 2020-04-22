@@ -22,3 +22,8 @@ class StockDto:
     parser.add_argument('face_value', type=int, required=True, help='This field cannot be left blank')
     parser.add_argument('company_detail', type=str, help='Company Detail')
     parser.add_argument('comapany_website', type=str, help='Company Website')
+
+class WatchlistDto:
+    parser = reqparse.RequestParser()
+    parser.add_argument('stock_id', type=int, required=True, help='This field cannot be left blank')
+    parser.add_argument('watchlist_no', type=int, required=True, help='This field cannot be left blank')

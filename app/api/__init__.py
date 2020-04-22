@@ -5,9 +5,10 @@ from .resources.auth_resource import UserLogin, Logout
 from .resources.import_resource import ImportStock, ImportHistoryStockReport, ImportDailyStockReport
 from .resources.stock_resource import StockList, Stock
 from .resources.analyzer_resource import StockIndicator, StockListIndicator
+from .resources.watchlist_resource import Watchlist
 
-blueprint = Blueprint('api', __name__, url_prefix="/api")
-api = Api(blueprint)
+api_blueprint = Blueprint('api', __name__, url_prefix="/api")
+api = Api(api_blueprint)
 
 """User related route"""
 api.add_resource(User, '/user/<public_id>')
@@ -28,3 +29,9 @@ api.add_resource(ImportDailyStockReport, '/import/report/day')
 """Stock analysis related route"""
 api.add_resource(StockIndicator, '/analyzer/indicator/<symbol>')
 api.add_resource(StockListIndicator, '/analyzer/indicator')
+
+"""watchlist related route"""
+api.add_resource(
+    Watchlist,
+    '/watchlist',
+    '/watchlist/<int:watchlist_no>/stock/<int:stock_id>')

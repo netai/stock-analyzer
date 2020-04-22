@@ -1,92 +1,91 @@
 from datetime import datetime
 from app import db
 from ..models.stock import Stock
-from ..models.stock_day_report import StockDayReport
+from ..models.stock_report import StockReport
 
-def save_stk_nse(csv_data):
-    """Save NSE listed stocks CSV to Database"""
+def save_import_stock(csv_data):
+    """Save stock list from json"""
     try:
-        next(csv_data)
         for row in csv_data:
-            stock = Stock.query.filter_by(symbol=row[0]).first()
+            stock = Stock.query.filter_by(symbol=row['symbol']).filter_by(exchange_name=row['exchange_name']).first()
             if not stock:
+                print(row['symbol'])
                 new_stock = Stock(
-                    symbol=row[0].strip(),
-                    company_name=row[1].strip(),
-                    series=row[2].strip(),
-                    listing_date=datetime.strptime(row[3].strip(), "%d-%b-%Y"),
-                    isin_number=row[6].strip(),
-                    face_value=row[7].strip()
+                    symbol=row['symbol'],
+                    company_name=row['company_name'],
+                    series=row['series'],
+                    listing_date=row['listing_date'],
+                    isin_number=row['isin_number'],
+                    face_value=row['face_value'],
+                    exchange_name=row['exchange_name']
                 )
                 db.session.add(new_stock)
         db.session.commit()
         return True
     except Exception as e:
         print(e)
-        return False
+        return None
 
-def save_stk_rpt_nse(csv_data, stock_id):
-    """Save NSE history stock report CSV to Database"""
+def save_history_report(data, stock_id, timeframe):
+    """Save NSE history stock report to Database"""
     try:
-        next(csv_data)
-        for row in csv_data:
-            if row:
-                date = datetime.strptime(row[2].strip(), "%d-%b-%Y").date()
-                stock_report = StockDayReport.query.filter_by(date=date).\
-                    filter_by(stock_id=stock_id).filter_by(series=row[1].strip()).first()
+        for row in data:
+            if row and row['series']=='EQ':
+                stock_report = StockReport.query.filter_by(date=row['date']).\
+                    filter_by(stock_id=stock_id).filter_by(series=row['series']).first()
                 if not stock_report:
-                    print(date)
-                    new_stock_report = StockDayReport(
-                        date=datetime.strptime(row[2].strip(), "%d-%b-%Y"),
-                        open_price=row[4].strip(),
-                        high_price=row[5].strip(),
-                        low_price=row[6].strip(),
-                        last_price=row[7].strip(),
-                        close_price=row[8].strip(),
-                        avg_price=row[9].strip(),
-                        traded_qty=('' if row[10].strip()=='-' else row[10].strip()),
-                        delivery_qty=('' if row[13].strip()=='-' else row[13].strip()),
-                        series=row[1].strip(),
-                        exchange_name='NSE',
-                        stock_id=stock_id
+                    print(row['date'])
+                    new_stock_report = StockReport(
+                        date=row['date'],
+                        prev_price=row['prev_price'],
+                        open_price=row['open_price'],
+                        high_price=row['high_price'],
+                        low_price=row['low_price'],
+                        last_price=row['last_price'],
+                        close_price=row['close_price'],
+                        avg_price=row['avg_price'],
+                        traded_qty=row['traded_qty'],
+                        delivery_qty=row['delivery_qty'],
+                        series=row['series'],
+                        stock_id=stock_id,
+                        trade_timeframe=timeframe
                     )
                     db.session.add(new_stock_report)
         db.session.commit()
         return True
     except Exception as e:
         print(e)
-        return False
+        return None
 
-def save_dly_stk_rpt_nse(csv_data):
-    """Save NSE daily stock report CSV to Database"""
+def save_daily_report(data, timeframe):
+    """Save NSE daily stock report to Database"""
     try:
-        next(csv_data)
-        for row in csv_data:
-            if row:
-                stock = Stock.query.filter_by(symbol=row[0]).first()
+        for row in data:
+            if row and row['series']=='EQ':
+                stock = Stock.query.filter_by(symbol=row['symbol']).first()
                 if stock:
-                    date = datetime.strptime(row[2].strip(), "%d-%b-%Y").date()
-                    stock_report = StockDayReport.query.filter_by(date=date).\
-                    filter_by(stock_id=stock.id).filter_by(series=row[1].strip()).first()
-                    print(stock.symbol)
+                    stock_report = StockReport.query.filter_by(date=row['date']).\
+                    filter_by(stock_id=stock.id).filter_by(series=row['series']).first()
                     if not stock_report:
-                        new_stock_report = StockDayReport(
-                            date=datetime.strptime(row[2].strip(), "%d-%b-%Y"),
-                            open_price=row[4].strip(),
-                            high_price=row[5].strip(),
-                            low_price=row[6].strip(),
-                            last_price=(row[7].strip() if row[7].strip() else 0),
-                            close_price=row[8].strip(),
-                            avg_price=row[9].strip(),
-                            traded_qty=('' if row[10].strip()=='-' else row[10].strip()),
-                            delivery_qty=('' if row[13].strip()=='-' else row[13].strip()),
-                            series=row[1].strip(),
-                            exchange_name='NSE',
-                            stock_id=stock.id
+                        print(row['symbol'])
+                        new_stock_report = StockReport(
+                            date=row['date'],
+                            prev_price=row['prev_price'],
+                            open_price=row['open_price'],
+                            high_price=row['high_price'],
+                            low_price=row['low_price'],
+                            last_price=row['last_price'],
+                            close_price=row['close_price'],
+                            avg_price=row['avg_price'],
+                            traded_qty=row['traded_qty'],
+                            delivery_qty=row['delivery_qty'],
+                            series=row['series'],
+                            stock_id=stock.id,
+                            trade_timeframe=timeframe
                         )
                         db.session.add(new_stock_report)
         db.session.commit()
         return True
     except Exception as e:
         print(e)
-        return False
+        return None

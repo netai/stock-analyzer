@@ -5,7 +5,9 @@ class UserSchema():
         'name': fields.String,
         'mobile': fields.String,
         'email': fields.String,
-        'public_id': fields.String
+        'admin': fields.String,
+        'public_id': fields.String,
+        'exchange_name': fields.String
     }
 
 class StockSchema():
@@ -18,5 +20,6 @@ class StockSchema():
         'isin_number': fields.String,
         'face_value': fields.Integer,
         'company_detail': fields.String,
-        'comapany_website': fields.String
+        'comapany_website': fields.String,
+        'exchange_name': fields.String
     }

@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import request
+from flask import request, g
 from ..helpers.auth_helper import Auth
 
 def token_required(f):
@@ -9,6 +9,8 @@ def token_required(f):
         user_data = data.get('data')
         if not user_data:
             return data, status
+        else:
+            g.user = user_data
         return f(*args, **kwargs)
     return decorated
 
@@ -26,5 +28,7 @@ def admin_token_required(f):
                 'message': 'admin token required'
             }
             return response_object, 401
+        else:
+            g.user = user_data
         return f(*args, **kwargs)
     return decorated

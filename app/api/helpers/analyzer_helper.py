@@ -1,8 +1,8 @@
 def find_candle_pattern(stock_data):
-    candle_1 = stock_data[0].StockDayReport
-    candle_2 = stock_data[1].StockDayReport
-    candle_3 = stock_data[2].StockDayReport
-    candle_4 = stock_data[3].StockDayReport
+    candle_1 = stock_data[0].StockReport
+    candle_2 = stock_data[1].StockReport
+    candle_3 = stock_data[2].StockReport
+    candle_4 = stock_data[3].StockReport
     
     DOJI_SIZE = 0.1
     #Doji Pattern

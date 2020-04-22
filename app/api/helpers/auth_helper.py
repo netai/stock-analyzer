@@ -11,8 +11,16 @@ class Auth:
                 if auth_token:
                     response_object = {
                         'status': 'success',
-                        'message': 'Successfully logged in.',
-                        'token': auth_token.decode()
+                        'data': {
+                            'token': auth_token.decode(),
+                            'user': {
+                                'name': user.name,
+                                'email': user.email,
+                                'mobile': user.mobile,
+                                'admin': user.admin,
+                                'public_id': user.public_id,
+                            }
+                        }
                     }
                     return response_object, 200
             else:

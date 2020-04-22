@@ -13,6 +13,7 @@ class Stock(db.Model):
     face_value = db.Column(db.Integer, nullable=False)
     company_detail = db.Column(db.Text, nullable=True)
     company_website = db.Column(db.String(255), nullable=True)
+    exchange_name = db.Column(db.String(5), nullable=False)
 
     def __repr__(self):
         return "<Stock '{}'>".format(self.symbol)

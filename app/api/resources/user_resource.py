@@ -30,7 +30,7 @@ class User(Resource):
         response_object = {
             'status': 'success',
             'data': {
-                'users': marshal(user, UserSchema.user_list)
+                'user': marshal(user, UserSchema.user_list)
             }
         }
         return response_object, 200

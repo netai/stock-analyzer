@@ -41,16 +41,16 @@ class Stock(Resource):
             'comapany_website': stock_detail.Stock.company_website,
             'trade_detail': {
                 'nse': {
-                    'date': str(stock_detail.StockDayReport.date),
-                    'open_price': stock_detail.StockDayReport.open_price,
-                    'high_price': stock_detail.StockDayReport.high_price,
-                    'low_price': stock_detail.StockDayReport.low_price,
-                    'last_price': stock_detail.StockDayReport.last_price,
-                    'close_price': stock_detail.StockDayReport.close_price,
-                    'avg_price': stock_detail.StockDayReport.avg_price,
-                    'traded_qty': stock_detail.StockDayReport.traded_qty,
-                    'dlvry_qty': stock_detail.StockDayReport.delivery_qty,
-                    'dlvry_per': round((stock_detail.StockDayReport.delivery_qty/stock_detail.StockDayReport.traded_qty)*100, 2),
+                    'date': str(stock_detail.StockReport.date),
+                    'open_price': stock_detail.StockReport.open_price,
+                    'high_price': stock_detail.StockReport.high_price,
+                    'low_price': stock_detail.StockReport.low_price,
+                    'last_price': stock_detail.StockReport.last_price,
+                    'close_price': stock_detail.StockReport.close_price,
+                    'avg_price': stock_detail.StockReport.avg_price,
+                    'traded_qty': stock_detail.StockReport.traded_qty,
+                    'dlvry_qty': stock_detail.StockReport.delivery_qty,
+                    'dlvry_per': round((stock_detail.StockReport.delivery_qty/stock_detail.StockReport.traded_qty)*100, 2),
                 }
             }
         }
