@@ -1,14 +1,14 @@
 from datetime import datetime
-from sqlalchemy import func
 from app import db
 from ..models.stock import Stock
 from ..models.stock_report import StockReport
-from ..models.user import User
+from ..schema import ErrorSchema
 
 def save_new_stock(data):
-    stock = Stock.query.filter_by(symbol=data['symbol']).first()
-    if not stock:
-        try:
+    try:
+        stock = Stock.query.filter_by(symbol=data['symbol']).filter_by(
+            exchange_name=data['exchange_name']).first()
+        if not stock:
             new_stock = Stock(
                 symbol=data['symbol'],
                 company_name=data['company_name'],
@@ -17,7 +17,7 @@ def save_new_stock(data):
                 isin_number=data['isin_number'],
                 face_value=data['face_value'],
                 company_detail=data['company_detail'],
-                exchange_name='NSE'
+                exchange_name=data['exchange_name']
             )
             save_changes(new_stock)
             response_object = {
@@ -25,32 +25,24 @@ def save_new_stock(data):
                 'message': 'Successfully added.'
             }
             return response_object, 201
-        except Exception as e:
-            print(e)
-            response_object = {
-                'status': 'fail',
-                'message': 'Some error occurred. Please try again.'
-            }
-            return response_object, 500
-    else:
-        response_object = {
-            'status': 'fail',
-            'message': 'Stock already exists.',
-        }
-        return response_object, 409
+        else:
+            return ErrorSchema.get_response('StockExistError')
+    except Exception as e:
+        return ErrorSchema.get_response('InternalServerError', e)
 
 def get_all_stock():
-    return Stock.query.all()
+    try:
+        return Stock.query.all()
+    except Exception as e:
+        return ErrorSchema.get_response('InternalServerError', e)
 
-def get_a_stock(symbol):
-    stock_detail = db.session.query(Stock,StockReport).join(StockReport, Stock.id==StockReport.stock_id)\
-        .filter(Stock.symbol==symbol).filter(StockReport.series==Stock.series).filter(StockReport.exchange_name=='NSE').order_by(StockReport.date.desc()).first()
-    return stock_detail
-
-def get_stock_data_limit(symbol, limit=1):
-    stock_data = db.session.query(Stock,StockReport).join(StockReport, Stock.id==StockReport.stock_id)\
-        .filter(Stock.symbol==symbol).filter(StockReport.series==Stock.series).filter(StockReport.exchange_name=='NSE').order_by(StockReport.date.desc()).limit(limit)
-    return stock_data
+def get_a_stock(id):
+    try:
+        stock_detail = db.session.query(Stock, StockReport).join(StockReport, Stock.id == StockReport.stock_id)\
+            .filter(Stock.id == id).filter(StockReport.series == Stock.series).order_by(StockReport.date.desc()).first()
+        return stock_detail
+    except Exception as e:
+        return ErrorSchema.get_response('InternalServerError', e)
 
 def save_changes(data):
     db.session.add(data)

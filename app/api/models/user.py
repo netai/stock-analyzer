@@ -2,6 +2,7 @@ import datetime
 import jwt
 from app import db, bcrypt
 from app.config import key
+from ..schema import ErrorSchema
 
 class User(db.Model):
     """ User Model for storing user related details """
@@ -58,9 +59,9 @@ class User(db.Model):
             payload = jwt.decode(auth_token, key)
             return payload['sub']
         except jwt.ExpiredSignatureError:
-            return 'Signature expired. Please log in again.'
+            return ErrorSchema.get_response('SignatureExpiredError')
         except jwt.InvalidTokenError:
-            return 'Invalid token. Please log in again.'
+            return ErrorSchema.get_response('InvalidAuthTokenError')
 
     def __repr__(self):
         return "<User '{}'>".format(self.email)

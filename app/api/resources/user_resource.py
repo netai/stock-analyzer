@@ -1,8 +1,8 @@
-from flask_restful import Resource, marshal, marshal_with
+from flask_restful import Resource, marshal
 from ..util.decorator import admin_token_required, token_required
 from ..util.dto import UserDto
-from ..util.schema import UserSchema
 from ..helpers.user_helper import save_new_user, get_all_users, get_a_user
+from ..schema import ErrorSchema
 
 class UserList(Resource):
     @admin_token_required
@@ -12,7 +12,7 @@ class UserList(Resource):
         response_object = {
             'status': 'success',
             'data': {
-                'users': marshal(users_list, UserSchema.user_list)
+                'users': marshal(users_list, user_list)
             }
         }
         return response_object, 200
@@ -27,10 +27,19 @@ class User(Resource):
     def get(self, public_id):
         """get a user given its identifier"""
         user = get_a_user(public_id)
-        response_object = {
-            'status': 'success',
-            'data': {
-                'user': marshal(user, UserSchema.user_list)
+        if user:
+            response_object = {
+                'status': 'success',
+                'data': {
+                    'user': {
+                        'name': user.name,
+                        'email': user.email,
+                        'mobile': user.mobile,
+                        'admin': user.admin,
+                        'public_id': user.public_id
+                    }
+                }
             }
-        }
-        return response_object, 200
+            return response_object, 200
+        else:
+            return ErrorSchema.get_response('UserNotExistError')

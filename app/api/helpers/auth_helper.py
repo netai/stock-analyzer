@@ -1,6 +1,8 @@
 from ..models.user import User
+from ..schema import ErrorSchema
+from flask import jsonify
 
-class Auth:
+class AuthHelper:
     @staticmethod
     def login_user(data):
         try:
@@ -24,19 +26,9 @@ class Auth:
                     }
                     return response_object, 200
             else:
-                response_object = {
-                    'status': 'fail',
-                    'message': 'email or password does not match.'
-                }
-                return response_object, 401
-
+                return ErrorSchema.get_response('UnauthorizedError')
         except Exception as e:
-            print(e)
-            response_object = {
-                'status': 'fail',
-                'message': 'Some error occurred. Please try again.'
-            }
-            return response_object, 500
+            return ErrorSchema.get_response('InternalServerError', e)
 
     @staticmethod
     def logout_user(data):
@@ -47,11 +39,7 @@ class Auth:
         if auth_token:
             resp = User.decode_auth_token(auth_token)
         else:
-            response_object = {
-                'status': 'fail',
-                'message': 'Provide a valid auth token.'
-            }
-            return response_object, 403
+            return ErrorSchema.get_response('InvalidAuthTokenError')
 
     @staticmethod
     def get_logged_in_user(new_request):
@@ -59,7 +47,7 @@ class Auth:
         auth_token = new_request.headers.get('Authorization')
         if auth_token:
             resp = User.decode_auth_token(auth_token)
-            if not isinstance(resp, str):
+            if isinstance(resp, int):
                 user = User.query.filter_by(id=resp).first()
                 response_object = {
                     'status': 'success',
@@ -72,14 +60,6 @@ class Auth:
                     }
                 }
                 return response_object, 200
-            response_object = {
-                'status': 'fail',
-                'message': resp
-            }
-            return response_object, 401
+            return resp
         else:
-            response_object = {
-                'status': 'fail',
-                'message': 'Provide a valid auth token.'
-            }
-            return response_object, 401
+            return ErrorSchema.get_response('InvalidAuthTokenError')
