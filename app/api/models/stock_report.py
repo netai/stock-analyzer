@@ -20,4 +20,4 @@ class StockReport(db.Model):
     trade_timeframe = db.Column(db.String(5), nullable=False)
 
     def __repr__(self):
-        return "<stock_report '{}'>".format(self.id)
+        return "<StockReport id: '{}', date: {}>".format(self.id, self.date)

@@ -1,6 +1,6 @@
 from .resources import UserList, User, Login, Logout, ImportStock, ImportHistoryStockReport,\
     ImportDailyStockReport, StockList, Stock, StockIndicator, StockListIndicator, Watchlist,\
-        OrderList
+        OrderList, OrderExecute, HoldingList
 
 def api_routes(api):
     """Auth related route"""
@@ -38,3 +38,9 @@ def api_routes(api):
         '/order',
         '/order/<int:id>'
         )
+
+    """manualy Execute order"""
+    api.add_resource(OrderExecute, '/order/execute')
+
+    """holding related route"""
+    api.add_resource(HoldingList, '/holding')

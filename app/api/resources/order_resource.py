@@ -1,8 +1,10 @@
 from flask_restful import Resource
 from ..util.decorator import token_required
 from ..schema import ErrorSchema
-from ..helpers.order_helper import get_order_all, save_order, get_order_json, delete_stock_order
+from ..helpers.order_helper import get_order_all, save_order, get_order_json, delete_stock_order,\
+    execute_order
 from ..util.dto import OrderDto
+import datetime
 
 class OrderList(Resource):
     @token_required
@@ -23,7 +25,7 @@ class OrderList(Resource):
             return response_object, 200
         except Exception as e:
             return ErrorSchema.get_response('InternalServerError', e)
-    
+
     @token_required
     def post(self):
         """add a new order"""
@@ -33,9 +35,11 @@ class OrderList(Resource):
     @token_required
     def delete(self, id):
         """delete order"""
-        delete_stock_order(id=id)
-        response_object = {
-            'status': 'success',
-            'message': 'Order cancelled successfully.'
-        }
-        return response_object, 200
+        return delete_stock_order(id=id)
+
+class OrderExecute(Resource):
+    @token_required
+    def get(self):
+        """Execute all pending order for individual user"""
+        execute1 = execute_order()
+        return execute_order()

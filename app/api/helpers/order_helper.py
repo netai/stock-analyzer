@@ -4,6 +4,7 @@ from ..models.order import Order
 from ..schema import ErrorSchema
 from ..models.stock import Stock
 from ..models.stock_report import StockReport
+from ..helpers.holding_helper import save_holding
 import datetime
 
 def save_order(data):
@@ -36,7 +37,8 @@ def get_order_all(status=None):
         order_detail = db.session.query(Order, Stock, last_tardes).join(Stock, Stock.id == Order.stock_id)\
             .join(last_tardes, Order.stock_id == last_tardes.c.stock_id).filter(Order.user_id == user_id).order_by(Order.date.desc())
         if status == 'executed':
-            order_detail = order_detail.filter(Order.status.in_(('completed', 'cancelled'))).filter(db.func.DATE(Order.executed_date) == datetime.date.today())
+            order_detail = order_detail.filter(Order.status.in_(('completed', 'cancelled'))).filter(
+                db.func.DATE(Order.executed_date) == datetime.date.today())
         elif status == 'pending':
             order_detail = order_detail.filter(Order.status == status)
         return order_detail
@@ -58,6 +60,11 @@ def delete_stock_order(id):
             order.executed_date = datetime.datetime.utcnow()
             order.status = 'cancelled'
             db.session.commit()
+            response_object = {
+                'status': 'success',
+                'message': 'Order cancelled successfully.'
+            }
+            return response_object, 200
         else:
             return ErrorSchema.get_response('OrderNotExistError')
     except Exception as e:
@@ -85,6 +92,54 @@ def get_order_json(data):
 
     return order_json
 
+# Dummy order execution section start here
+
+def get_order_stock_report(order):
+    user_id = g.user['id']
+    stock_report = StockReport.query.filter(StockReport.low_price <= order.Order.price).filter(StockReport.high_price >= order.Order.price)\
+        .filter(StockReport.date >=  db.func.DATE(order.Order.date)).filter(StockReport.stock_id == order.Order.stock_id).order_by(StockReport.date.asc()).first()
+    return stock_report
+
+def execute_order():
+    try:
+        user_id = g.user['id']
+        open_order_detail = get_order_all('pending')
+        for row in open_order_detail:
+            matching_stock_report = get_order_stock_report(row)
+            if matching_stock_report:
+                order = Order.query.filter_by(
+                    id=row.Order.id).filter_by(user_id=user_id).first()
+                order.executed_date = matching_stock_report.date
+                order.status = 'completed'
+                save_holding({
+                    'stock_id': row.Order.stock_id,
+                    'qty': row.Order.qty,
+                    'is_sell': row.Order.is_sell,
+                    'price': row.Order.price
+                })
+
+                if row.Order.sl_price > 0:
+                    save_order({
+                        'date': matching_stock_report.date,
+                        'order_type': 'market',
+                        'is_sell': not row.Order.is_sell,
+                        'price': row.Order.sl_price,
+                        'qty': row.Order.qty,
+                        'sl_price': 0,
+                        'stock_id': row.Order.stock_id
+                    })
+            db.session.commit()
+
+        response_object = {
+            'status': 'success',
+            'message': 'Order executed successfully.'
+        }
+        return response_object, 200
+
+    except Exception as e:
+        return ErrorSchema.get_response('InternalServerError', e)
+
+# Dummy order execution end here
 
 def save_changes(data):
     db.session.add(data)
