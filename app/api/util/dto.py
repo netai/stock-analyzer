@@ -3,7 +3,7 @@ from flask_restful import Resource, reqparse, fields
 class UserDto:
     parser = reqparse.RequestParser()
     parser.add_argument('name', type=str, required=True, help='This field cannot be left blank')
-    parser.add_argument('mobile', type=str, required=True, help='This field cannot be left blank')
+    parser.add_argument('mobile', type=str, help='This field cannot be left blank')
     parser.add_argument('email', type=str, required=True, help='This field cannot be left blank')
     parser.add_argument('password', type=str, required=True, help='This field cannot be left blank')
 

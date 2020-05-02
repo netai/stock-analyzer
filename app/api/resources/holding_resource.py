@@ -25,6 +25,7 @@ class HoldingList(Resource):
                     'net_change': "{0:+}".format(round(((cur_value - row.Holding.inv_amount)/row.Holding.inv_amount)* 100, 2)),
                     'is_sell': row.Holding.is_sell,
                     'stock': {
+                        'id': row.Stock.id,
                         'symbol': row.Stock.symbol,
                         'exchange_name': row.Stock.exchange_name,
                         'last_price': row.last_price,

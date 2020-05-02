@@ -39,7 +39,12 @@ class ErrorSchema:
             "message": "Order not exist or you are not authorized to cancel this order",
             "status": "fail",
             "code": 403
-        }
+        },
+        "UserExistError": {
+            "message": "User already exists. Please Log in.",
+            "status": "fail",
+            "code": 409
+        },
     }
 
     @classmethod
