@@ -1,7 +1,6 @@
 from datetime import datetime
 from app import db
-from ..models.stock import Stock
-from ..models.stock_report import StockReport
+from app.models import Stock, StockReport
 from ..schema import ErrorSchema
 
 def save_new_stock(data):

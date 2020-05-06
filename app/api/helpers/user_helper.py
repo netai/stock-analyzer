@@ -1,7 +1,7 @@
 import uuid
 import datetime
 from app import db
-from ..models.user import User
+from app.models import User
 from ..schema.error_schema import ErrorSchema
 
 def save_new_user(data):

@@ -1,4 +1,4 @@
-from app import db
+from .. import db
 
 class Holding(db.Model):
     """Holding model for storing order retated details"""

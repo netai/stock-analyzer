@@ -1,4 +1,4 @@
-from app import db
+from .. import db
 
 class WatchlistStock(db.Model):
     """watchlist stock model for storing watchlist stock"""

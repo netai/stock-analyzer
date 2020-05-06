@@ -1,8 +1,6 @@
 from flask import g
 from app import db
-from ..models.stock import Stock
-from ..models.watchlist_stock import WatchlistStock
-from ..models.stock_report import StockReport
+from app.models import Stock, WatchlistStock, StockReport
 from ..schema import ErrorSchema
 
 def save_stock_watchlist(data):

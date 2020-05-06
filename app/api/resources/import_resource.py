@@ -3,7 +3,7 @@ from ..util.decorator import admin_token_required
 from ..helpers.import_helper import save_import_stock, save_history_report, save_daily_report
 from ..helpers.stock_helper import get_all_stock
 from ..helpers.nse_helper import NSEHelper
-from app.constants import Messages
+from ..schema.error_schema import ErrorSchema
 
 class ImportStock(Resource):
     @admin_token_required
@@ -20,13 +20,8 @@ class ImportStock(Resource):
             }
             return response_object, 200
         else:
-            response_object = {
-                'status': 'fail',
-                'message': Messages.MESSAGE['SOME_ERROR']
-            }
-            return response_object, 500
+            return ErrorSchema.get_response('InternalServerError')
             
-
 class ImportHistoryStockReport(Resource):
     @admin_token_required
     def get(self):
@@ -51,29 +46,14 @@ class ImportHistoryStockReport(Resource):
             }
             return response_object, 200
         else:
-            response_object = {
-                'status': 'fail',
-                'message': Messages.MESSAGE['SOME_ERROR']
-            }
-            return response_object, 500
+            return ErrorSchema.get_response('InternalServerError')
 
 class ImportDailyStockReport(Resource):
     @admin_token_required
     def get(self):
         """Import stock daily data and store into database"""
-        status = None
         daily_report = NSEHelper().get_daily_report()
         if daily_report:
-            status = save_daily_report(data=daily_report, timeframe='1D')
-        if status:
-            response_object = {
-                'status': 'success',
-                'message': 'Stock report successfully imported from NSE/BSE'
-            }
-            return response_object, 200
+            return save_daily_report(data=daily_report, timeframe='1D')
         else:
-            response_object = {
-                'status': 'fail',
-                'message': Messages.MESSAGE['SOME_ERROR']
-            }
-            return response_object, 500
+            return ErrorSchema.get_response('InternalServerError')

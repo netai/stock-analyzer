@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import render_template
 
 def Index():
     site_config = {

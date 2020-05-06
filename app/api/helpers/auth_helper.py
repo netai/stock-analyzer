@@ -1,6 +1,5 @@
-from ..models.user import User
+from app.models import User
 from ..schema import ErrorSchema
-from flask import jsonify
 
 class AuthHelper:
     @staticmethod
@@ -60,6 +59,9 @@ class AuthHelper:
                     }
                 }
                 return response_object, 200
-            return resp
+            elif resp == 'expired':
+                return ErrorSchema.get_response('SignatureExpiredError')
+            else:
+                return ErrorSchema.get_response('InvalidAuthTokenError')
         else:
             return ErrorSchema.get_response('InvalidAuthTokenError')

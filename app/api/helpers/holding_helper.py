@@ -1,8 +1,6 @@
 from flask import g
 from app import db
-from ..models.holding import Holding
-from ..models.stock_report import StockReport
-from ..models.stock import Stock
+from app.models import Holding, StockReport, Stock
 from ..schema import ErrorSchema
 
 def save_holding(data):

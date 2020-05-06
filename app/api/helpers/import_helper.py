@@ -1,7 +1,7 @@
 from datetime import datetime
 from app import db
-from ..models.stock import Stock
-from ..models.stock_report import StockReport
+from app.models import Stock, StockReport
+from ..schema.error_schema import ErrorSchema
 
 def save_import_stock(csv_data):
     """Save stock list from json"""
@@ -60,6 +60,7 @@ def save_history_report(data, stock_id, timeframe):
 def save_daily_report(data, timeframe):
     """Save NSE daily stock report to Database"""
     try:
+        report_log = []
         for row in data:
             if row and row['series']=='EQ':
                 stock = Stock.query.filter_by(symbol=row['symbol']).first()
@@ -68,6 +69,7 @@ def save_daily_report(data, timeframe):
                     filter_by(stock_id=stock.id).filter_by(series=row['series']).first()
                     if not stock_report:
                         print(row['symbol'])
+                        report_log.append('{} ({})========== INSERTED'.format(row['symbol'], row['date']))
                         new_stock_report = StockReport(
                             date=row['date'],
                             prev_price=row['prev_price'],
@@ -84,8 +86,16 @@ def save_daily_report(data, timeframe):
                             trade_timeframe=timeframe
                         )
                         db.session.add(new_stock_report)
+                    else:
+                        report_log.append('{} ({})========== EXISTS'.format(row['symbol'], row['date']))
         db.session.commit()
-        return True
+        response_object = {
+            'status': 'success',
+            'message': 'Stock report successfully imported from NSE',
+            'data': {
+                'log': report_log
+            }
+        }
+        return response_object, 200
     except Exception as e:
-        print(e)
-        return None
+        return ErrorSchema.get_response('InternalServerError')

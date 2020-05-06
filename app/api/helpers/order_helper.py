@@ -1,11 +1,9 @@
 from flask import g
-from app import db
-from ..models.order import Order
-from ..schema import ErrorSchema
-from ..models.stock import Stock
-from ..models.stock_report import StockReport
-from ..helpers.holding_helper import save_holding
 import datetime
+from app import db
+from app.models import Order, Stock, StockReport
+from ..schema import ErrorSchema
+from .holding_helper import save_holding
 
 def save_order(data):
     try:

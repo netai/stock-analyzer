@@ -1,5 +1,5 @@
-from app import db
 import datetime
+from .. import db
 
 class Order(db.Model):
     """Order model for storing order retated details"""
