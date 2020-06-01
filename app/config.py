@@ -25,7 +25,7 @@ class TestingConfig(Config):
 
 class ProductionConfig(Config):
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/jupiterlyzer'
+    SQLALCHEMY_DATABASE_URI = 'postgres://zbixlwgeqfqdbn:f1ab4829f3ef8fef2c94e100807d93704f455a3335e9fb84d3f72c5ad39a700a@ec2-3-222-150-253.compute-1.amazonaws.com:5432/d38l1gem4fsn0o'
 
 config_by_name = dict(
     dev=DevelopmentConfig,
