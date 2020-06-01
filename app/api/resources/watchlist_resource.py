@@ -25,7 +25,9 @@ class Watchlist(Resource):
                 change_per = round((abs(row.prev_price-row.last_price)/row.prev_price)*100, 2)
                 watchlist_json[lastIndx]['stocks'].append({
                     'id': row.Stock.id,
+                    'public_id': row.Stock.public_id,
                     'symbol': row.Stock.symbol,
+                    'series': row.Stock.series,
                     'traded_date': str(row.last_trade_date),
                     'company_name': row.Stock.company_name,
                     'exchange_name': row.Stock.exchange_name,

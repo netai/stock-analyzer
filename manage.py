@@ -6,10 +6,12 @@ from flask_cors import CORS
 from app import create_app, db
 from app.api import api_blueprint
 from app.main import main_blueprint
+from app.stream import stream_blueprint
 
 app = create_app(os.getenv('STOCK_PROJ_ENV') or 'dev')
 app.register_blueprint(main_blueprint)
 app.register_blueprint(api_blueprint)
+app.register_blueprint(stream_blueprint)
 app.app_context().push()
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 manager = Manager(app)

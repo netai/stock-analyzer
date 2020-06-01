@@ -15,7 +15,7 @@ def save_holding(data):
             qty = holding.qty - data['qty']
             inv_amount = holding.inv_amount - (data['price'] * data['qty'])
             # insert (data['price'] * data['qty']) amount to fund
-            avg_price = round(inv_amount/qty, 2)
+            avg_price = round(inv_amount/qty, 2) if qty>0 else 0
         if qty <= 0:
             qty = abs(qty)
             Holding.query.filter_by(user_id=user_id).filter_by(stock_id=data['stock_id']).delete()

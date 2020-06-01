@@ -1,4 +1,5 @@
 from datetime import datetime
+import uuid
 from app import db
 from app.models import Stock, StockReport
 from ..schema.error_schema import ErrorSchema
@@ -6,6 +7,7 @@ from ..schema.error_schema import ErrorSchema
 def save_import_stock(csv_data):
     """Save stock list from json"""
     try:
+        report_log = []
         for row in csv_data:
             stock = Stock.query.filter_by(symbol=row['symbol']).filter_by(exchange_name=row['exchange_name']).first()
             if not stock:
@@ -17,13 +19,35 @@ def save_import_stock(csv_data):
                     listing_date=row['listing_date'],
                     isin_number=row['isin_number'],
                     face_value=row['face_value'],
-                    exchange_name=row['exchange_name']
+                    exchange_name=row['exchange_name'],
+                    public_id = str(uuid.uuid4()),
                 )
                 db.session.add(new_stock)
+                report_log.append('{} ({})========== INSERTED'.format(row['company_name'], row['symbol']))
+            else:
+                stock.company_name = row['company_name']
+                stock.series = row['series']
+                stock.listing_date = row['listing_date']
+                stock.isin_number = row['isin_number']
+                stock.face_value = row['face_value']
+                stock.exchange_name = row['exchange_name']
+                db.session.add(stock)
+                report_log.append('{} ({})========== UPDATED'.format(row['company_name'], row['symbol']))
         db.session.commit()
-        return True
+        return report_log
     except Exception as e:
-        print(e)
+        return None
+
+def replace_import_symbol(csv_data):
+    """replace new symbol list from json"""
+    try:
+        report_log = []
+        for row in csv_data:
+            stock = Stock.query.filter_by(symbol=row['old_symbol']).filter_by(exchange_name=row['exchange_name']).first()
+            if stock:
+                report_log.append('{} To {} ({})========== REPLACED'.format(row['old_symbol'], row['new_symbol'], str(row['date'])))
+        return report_log
+    except Exception as e:
         return None
 
 def save_history_report(data, stock_id, timeframe):

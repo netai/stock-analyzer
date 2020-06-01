@@ -88,6 +88,28 @@ class NSEHelper:
             print(e)
             return None
 
+    def get_symbol_change_list(self):
+        """Import symbol change list from NSE website"""
+        symbol_list = []
+        try:
+            downloaded_response = requests.get(ExternalURL.NSE['SYMBOL_CHANGE'])
+            csv_reader = csv.reader(downloaded_response.content.decode('cp1252').splitlines(), delimiter=',')
+            next(csv_reader)
+            for row in csv_reader:
+                symbol_list.append({
+                    'old_symbol': row[1].strip(),
+                    'new_symbol': row[2].strip(),
+                    'company_name': row[0].strip(),
+                    'date': datetime.strptime(row[3].strip(), "%d-%b-%Y"),
+                    'exchange_name': 'NSE'
+                })
+            
+            return symbol_list
+
+        except Exception as e:
+            print(e)
+            return None
+
     def get_daily_report(self):
         """Import daily report from NSE website"""
         daily_data = []

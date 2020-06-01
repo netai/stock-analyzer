@@ -8,12 +8,13 @@ class Stock(db.Model):
     symbol = db.Column(db.String(20), nullable=False, unique=True)
     company_name = db.Column(db.String(255), nullable=False)
     series = db.Column(db.String(3), nullable=False)
-    listing_date = db.Column(db.Date, nullable=False)
+    listing_date = db.Column(db.Date, nullable=True)
     isin_number = db.Column(db.String(20), nullable=False)
     face_value = db.Column(db.Integer, nullable=False)
     company_detail = db.Column(db.Text, nullable=True)
     company_website = db.Column(db.String(255), nullable=True)
     exchange_name = db.Column(db.String(5), nullable=False)
+    public_id = db.Column(db.String(100), unique=True)
 
     def __repr__(self):
         return "<Stock '{}'>".format(self.symbol)

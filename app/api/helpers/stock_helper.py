@@ -31,15 +31,23 @@ def save_new_stock(data):
 
 def get_all_stock():
     try:
-        return Stock.query.all()
+        return Stock.query.filter_by(series='EQ').all()
     except Exception as e:
         return ErrorSchema.get_response('InternalServerError', e)
 
-def get_a_stock(id):
+def get_a_stock(public_id):
     try:
         stock_detail = db.session.query(Stock, StockReport).join(StockReport, Stock.id == StockReport.stock_id)\
-            .filter(Stock.id == id).filter(StockReport.series == Stock.series).order_by(StockReport.date.desc()).first()
+            .filter(Stock.public_id == public_id).filter(StockReport.series == Stock.series).order_by(StockReport.date.desc()).first()
         return stock_detail
+    except Exception as e:
+        return ErrorSchema.get_response('InternalServerError', e)
+
+def get_report(public_id, data):
+    try:
+        stock_report_detail = StockReport.query.join(Stock, Stock.id == StockReport.stock_id).filter(Stock.public_id == public_id)\
+            .filter(StockReport.date.between(data['from_date'], data['to_date'])).order_by(StockReport.date.desc()).all()
+        return stock_report_detail
     except Exception as e:
         return ErrorSchema.get_response('InternalServerError', e)
 

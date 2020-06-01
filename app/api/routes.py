@@ -1,6 +1,6 @@
 from .resources import UserList, User, Login, Logout, ImportStock, ImportHistoryStockReport,\
     ImportDailyStockReport, StockList, Stock, StockIndicator, StockListIndicator, Watchlist,\
-        OrderList, OrderExecute, HoldingList
+        OrderList, OrderExecute, HoldingList, StockReport, ActivityIndex
 
 def api_routes(api):
     """Auth related route"""
@@ -13,8 +13,8 @@ def api_routes(api):
 
     """Stock related route"""
     api.add_resource(StockList, '/stock')
-    api.add_resource(Stock, '/stock/<id>')
-
+    api.add_resource(Stock, '/stock/<public_id>')
+    api.add_resource(StockReport, '/stock/report/<public_id>')
 
     """Data import related route"""
     api.add_resource(ImportStock, '/import/stock')
@@ -44,3 +44,6 @@ def api_routes(api):
 
     """holding related route"""
     api.add_resource(HoldingList, '/holding')
+
+    """Activity related route"""
+    api.add_resource(ActivityIndex, '/activity')

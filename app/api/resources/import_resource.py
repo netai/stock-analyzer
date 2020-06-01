@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from ..util.decorator import admin_token_required
-from ..helpers.import_helper import save_import_stock, save_history_report, save_daily_report
+from ..helpers.import_helper import save_import_stock, save_history_report, save_daily_report, replace_import_symbol
 from ..helpers.stock_helper import get_all_stock
 from ..helpers.nse_helper import NSEHelper
 from ..schema.error_schema import ErrorSchema
@@ -8,19 +8,27 @@ from ..schema.error_schema import ErrorSchema
 class ImportStock(Resource):
     @admin_token_required
     def get(self):
-        """Import stocks from nse/bse website and store into database"""
-        status = None
-        nse_stock_list = NSEHelper().get_stock_list()
-        if nse_stock_list:
-            status = save_import_stock(nse_stock_list)
-        if status:
+        """Import stocks from nse/bse website and store into database"""       
+        try:
+            replace_report_log = []
+            stock_report_log = []
+            nse_symbol_change_list = NSEHelper().get_symbol_change_list()
+            if nse_symbol_change_list:
+                replace_report_log = replace_import_symbol(nse_symbol_change_list)
+            nse_stock_list = NSEHelper().get_stock_list()
+            if nse_stock_list:
+                stock_report_log = save_import_stock(nse_stock_list)
             response_object = {
                 'status': 'success',
-                'message': 'Stock list successfully imported from NSE/BSE'
+                'message': 'Stocks successfully imported from NSE',
+                'data': {
+                    'log': replace_report_log + stock_report_log
+                }
             }
             return response_object, 200
-        else:
+        except Exception as e:
             return ErrorSchema.get_response('InternalServerError')
+
             
 class ImportHistoryStockReport(Resource):
     @admin_token_required

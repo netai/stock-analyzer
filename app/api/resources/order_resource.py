@@ -41,5 +41,4 @@ class OrderExecute(Resource):
     @token_required
     def get(self):
         """Execute all pending order for individual user"""
-        execute1 = execute_order()
         return execute_order()

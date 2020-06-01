@@ -23,6 +23,11 @@ class StockDto:
     parser.add_argument('company_detail', type=str, help='Company Detail')
     parser.add_argument('company_website', type=str, help='Company Website')
 
+class StockReportDto:
+    parser = reqparse.RequestParser()
+    parser.add_argument('from_date', type=str, required=True, help='This field cannot be left blank', location='args')
+    parser.add_argument('to_date', type=str, required=True, help='This field cannot be left blank', location='args')
+
 class WatchlistDto:
     parser = reqparse.RequestParser()
     parser.add_argument('stock_id', type=int, required=True, help='This field cannot be left blank')
@@ -36,3 +41,10 @@ class OrderDto:
     parser.add_argument('qty', type=int, required=True, help='This field cannot be left blank')
     parser.add_argument('sl_price', type=float, required=True, help='This field cannot be left blank')
     parser.add_argument('stock_id', type=int, required=True, help='This field cannot be left blank')
+
+class ActivityDto:
+    parser = reqparse.RequestParser()
+    parser.add_argument('delivery_limit', type=int, required=True, help='This field cannot be left blank', location='args')
+    parser.add_argument('volumn_limit', type=int, required=True, help='This field cannot be left blank', location='args')
+    parser.add_argument('gainer_limit', type=int, required=True, help='This field cannot be left blank', location='args')
+    parser.add_argument('loser_limit', type=int, required=True, help='This field cannot be left blank', location='args')
